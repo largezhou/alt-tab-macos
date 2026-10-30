@@ -253,6 +253,16 @@ class LicenseManager {
     }
 
     func computeState() -> LicenseState {
+        #if LOCAL_PRO
+        // Local-only build flag, set by the gitignored `config/local.xcconfig`: Pro without license or trial.
+        return .pro
+        #else
+        return computeLicensedState()
+        #endif
+    }
+
+    /// The licensed/trial state described in `LicenseManagerSpecs.md`. `LOCAL_PRO` builds never reach it.
+    private func computeLicensedState() -> LicenseState {
         #if DEBUG
         if hasMockedLicense { return mockedTrialStartDate.map(trialState) ?? state }
         #endif

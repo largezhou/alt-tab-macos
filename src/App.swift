@@ -577,7 +577,10 @@ class App: AppCenterApplication {
             startingUpdater: false,
             updaterDelegate: App.sparkleDelegate!,
             userDriverDelegate: nil)
-        #if DEBUG
+        #if LOCAL_PRO
+        // Sparkle's scheduled checks only start with `startUpdater()`, so leaving it unstarted keeps an
+        // official update from replacing this locally-built Pro binary. Manual "Check for updates…" still works.
+        #elseif DEBUG
         if !Preferences.qaPristine && !QaLifecycle.enabled {
             DispatchQueue.main.asyncAfter(deadline: .now() + 30) { App.updaterController?.startUpdater() }
         }
